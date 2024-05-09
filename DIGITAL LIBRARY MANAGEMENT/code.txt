@@ -1,0 +1,299 @@
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
+
+public class Main {
+    private static Scanner scanner = new Scanner(System.in);
+    private static Map<String, String> adminCredentials = new HashMap<>();
+    private static Map<String, String> userCredentials = new HashMap<>();
+    private static Map<String, String> books = new HashMap<>();
+    private static Map<String, String> members = new HashMap<>();
+
+    public static void main(String[] args) {
+        adminCredentials.put("admin", "admin"); // Default admin credentials
+        userCredentials.put("user", "user");     // Default user credentials
+
+        int userType;
+
+        System.out.println("Welcome to Digital Library Management System");
+
+        do {
+            System.out.println("Select User Type:");
+            System.out.println("1. Admin");
+            System.out.println("2. User");
+            System.out.println("3. Exit");
+
+            userType = scanner.nextInt();
+
+            switch (userType) {
+                case 1:
+                    adminModule();
+                    break;
+                case 2:
+                    userModule();
+                    break;
+                case 3:
+                    System.out.println("Exiting the system. Goodbye!");
+                    break;
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+            }
+        } while (userType != 3);
+    }
+
+    private static void adminModule() {
+        System.out.println("Admin Login");
+        if (login("admin", adminCredentials)) {
+            int adminChoice;
+
+            do {
+                System.out.println("\nAdmin Module:");
+                System.out.println("1. Add Book");
+                System.out.println("2. Delete Book");
+                System.out.println("3. Update Book Details");
+                System.out.println("4. Add Member");
+                System.out.println("5. Delete Member");
+                System.out.println("6. Update Member Details");
+                System.out.println("7. Generate Report");
+                System.out.println("8. Exit to Main Menu");
+
+                System.out.print("Enter your choice: ");
+                adminChoice = scanner.nextInt();
+
+                switch (adminChoice) {
+                    case 1:
+                        addBook();
+                        break;
+                    case 2:
+                        deleteBook();
+                        break;
+                    case 3:
+                        updateBookDetails();
+                        break;
+                    case 4:
+                        addMember();
+                        break;
+                    case 5:
+                        deleteMember();
+                        break;
+                    case 6:
+                        updateMemberDetails();
+                        break;
+                    case 7:
+                        generateReport();
+                        break;
+                    case 8:
+                        System.out.println("Exiting Admin Module.");
+                        break;
+                    default:
+                        System.out.println("Invalid choice. Please try again.");
+                }
+            } while (adminChoice != 8);
+        } else {
+            System.out.println("Login failed. Returning to main menu.");
+        }
+    }
+
+    private static void userModule() {
+        System.out.println("User Login");
+        if (login("user", userCredentials)) {
+            int userChoice;
+
+            do {
+                System.out.println("\nUser Module:");
+                System.out.println("1. View Books");
+                System.out.println("2. Search Book");
+                System.out.println("3. Issue Book");
+                System.out.println("4. Return Book");
+                System.out.println("5. Email Query");
+                System.out.println("6. Exit to Main Menu");
+
+                System.out.print("Enter your choice: ");
+                userChoice = scanner.nextInt();
+
+                switch (userChoice) {
+                    case 1:
+                        viewBooks();
+                        break;
+                    case 2:
+                        searchBook();
+                        break;
+                    case 3:
+                        issueBook();
+                        break;
+                    case 4:
+                        returnBook();
+                        break;
+                    case 5:
+                        emailQuery();
+                        break;
+                    case 6:
+                        System.out.println("Exiting User Module.");
+                        break;
+                    default:
+                        System.out.println("Invalid choice. Please try again.");
+                }
+            } while (userChoice != 6);
+        } else {
+            System.out.println("Login failed. Returning to main menu.");
+        }
+    }
+
+    private static boolean login(String userType, Map<String, String> credentials) {
+        System.out.print("Enter username: ");
+        String username = scanner.next();
+        System.out.print("Enter password: ");
+        String password = scanner.next();
+
+        if (credentials.containsKey(username) && credentials.get(username).equals(password)) {
+            System.out.println("Login successful. Welcome, " + userType + "!");
+            return true;
+        } else {
+            System.out.println("Invalid username or password. Login failed.");
+            return false;
+        }
+    }
+
+    private static void addBook() {
+        System.out.print("Enter book ID: ");
+        String bookId = scanner.next();
+        System.out.print("Enter book name: ");
+        String bookName = scanner.next();
+        books.put(bookId, bookName);
+        System.out.println("Book added successfully!");
+    }
+
+    private static void deleteBook() {
+        System.out.print("Enter book ID to delete: ");
+        String bookId = scanner.next();
+        if (books.containsKey(bookId)) {
+            books.remove(bookId);
+            System.out.println("Book deleted successfully!");
+        } else {
+            System.out.println("Book not found!");
+        }
+    }
+
+    private static void updateBookDetails() {
+        System.out.print("Enter book ID to update details: ");
+        String bookId = scanner.next();
+        if (books.containsKey(bookId)) {
+            System.out.print("Enter new book name: ");
+            String newBookName = scanner.next();
+            books.put(bookId, newBookName);
+            System.out.println("Book details updated successfully!");
+        } else {
+            System.out.println("Book not found!");
+        }
+    }
+
+    private static void addMember() {
+        System.out.print("Enter member ID: ");
+        String memberId = scanner.next();
+        System.out.print("Enter member name: ");
+        String memberName = scanner.next();
+        members.put(memberId, memberName);
+        userCredentials.put(memberName.toLowerCase(), memberName.toLowerCase()); // Username and password same for simplicity
+        System.out.println("Member added successfully!");
+    }
+
+    private static void deleteMember() {
+        System.out.print("Enter member ID to delete: ");
+        String memberId = scanner.next();
+        if (members.containsKey(memberId)) {
+            members.remove(memberId);
+            System.out.println("Member deleted successfully!");
+        } else {
+            System.out.println("Member not found!");
+        }
+    }
+
+    private static void updateMemberDetails() {
+        System.out.print("Enter member ID to update details: ");
+        String memberId = scanner.next();
+        if (members.containsKey(memberId)) {
+            System.out.print("Enter new member name: ");
+            String newMemberName = scanner.next();
+            members.put(memberId, newMemberName);
+            userCredentials.put(newMemberName.toLowerCase(), newMemberName.toLowerCase()); // Update username and password
+            System.out.println("Member details updated successfully!");
+        } else {
+            System.out.println("Member not found!");
+        }
+    }
+
+private static void generateReport() {
+    System.out.println("Generating report...");
+
+    if (members.isEmpty()) {
+        System.out.println("No members to generate a report for.");
+    } else {
+        System.out.println("Member Report:");
+        for (Map.Entry<String, String> entry : members.entrySet()) {
+            System.out.println("Member ID: " + entry.getKey() + ", Member Name: " + entry.getValue());
+        }
+    }
+}
+
+    private static void viewBooks() {
+        if (books.isEmpty()) {
+            System.out.println("No books available in the library.");
+        } else {
+            System.out.println("Available books in the library:");
+            for (Map.Entry<String, String> entry : books.entrySet()) {
+                System.out.println("Book ID: " + entry.getKey() + ", Book Name: " + entry.getValue());
+            }
+        }
+    }
+
+    private static void searchBook() {
+        System.out.print("Enter book name to search: ");
+        String bookName = scanner.next();
+        boolean found = false;
+        for (Map.Entry<String, String> entry : books.entrySet()) {
+            if (entry.getValue().equalsIgnoreCase(bookName)) {
+                System.out.println("Book found with ID: " + entry.getKey());
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            System.out.println("Book not found!");
+        }
+    }
+
+    private static void issueBook() {
+    System.out.println("Issue Book:");
+    System.out.print("Enter member ID: ");
+    String memberId = scanner.next();
+    System.out.print("Enter book ID: ");
+    String bookId = scanner.next();
+    
+    // You can add more logic here to handle book issuance
+    
+    System.out.println("Book issued successfully to member " + memberId);
+}
+
+private static void returnBook() {
+    System.out.println("Return Book:");
+    System.out.print("Enter member ID: ");
+    String memberId = scanner.next();
+    System.out.print("Enter book ID: ");
+    String bookId = scanner.next();
+    
+    // You can add more logic here to handle book return
+    
+    System.out.println("Book returned successfully by member " + memberId);
+}
+
+private static void emailQuery() {
+    System.out.println("Email Query:");
+    System.out.print("Enter your query: ");
+    String query = scanner.nextLine(); // Consume newline character
+    query = scanner.nextLine(); // Read the query
+    
+    // Simulate sending an email by printing the query
+    System.out.println("Query sent: " + query);
+}
+
+}
